@@ -1,0 +1,9 @@
+schema:
+  - internal/graphql/schema/*.gql
+
+client:
+  package: graphql
+  filename: internal/graphql/client.go
+
+query:
+  - internal/graphql/query/*.gql

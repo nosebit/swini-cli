@@ -1,0 +1,7 @@
+type AccountCreateRes {
+  user_id: String!
+}
+
+type Mutation {
+  accountCreate(pubkey: String!): AccountCreateRes!
+}

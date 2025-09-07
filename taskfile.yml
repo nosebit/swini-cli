@@ -1,0 +1,14 @@
+version: '3'
+
+tasks:
+  build:gql:
+    cmds:
+      - go run github.com/Yamashou/gqlgenc generate
+
+  run:
+    cmds:
+      - go run main.go {{.CLI_ARGS}}
+
+  tidy:
+    cmds:
+      - go mod tidy
