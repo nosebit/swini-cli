@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"swini-cli/cmd/account"
+	"swini-cli/internal/config"
 	"swini-cli/internal/graphql"
 
 	"github.com/Yamashou/gqlgenc/clientv2"
@@ -15,7 +16,14 @@ var mainCmd = &cobra.Command{
 }
 
 func Execute() {
-	graphql.InitSharedClient("http://localhost:8080/gql", &clientv2.Options{})
+	cfg, err := config.Load()
+
+	if err != nil {
+		fmt.Println("Error loading config:", err)
+		return
+	}
+
+	graphql.InitSharedClient(cfg.ApiUrl, &clientv2.Options{})
 
 	if err := mainCmd.Execute(); err != nil {
 		fmt.Println(err)

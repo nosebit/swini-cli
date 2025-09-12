@@ -1,13 +1,13 @@
 # swini-cli
 
-A Go CLI tool for account creation and management.
+A Go CLI tool for profile creation and management.
 
 ## Features
-- `swini account create`: Generates an EC key pair, stores the private key locally, calls a GraphQL mutation to create an account, and stores the returned user ID.
+- `swini profile create`: Generates an EC key pair, stores the private key locally, calls a GraphQL mutation to create a profile, and stores the returned user ID.
 
 ## Usage
 ```
-swini account create
+swini profile create
 ```
 
 
@@ -18,6 +18,6 @@ swini account create
 task build:gql
 
 # Test the CLI
-task run -- account create
-go main.go account create
+task run -- profile create
+go main.go profile create
 ```

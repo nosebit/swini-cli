@@ -17,14 +17,14 @@ func NewClient(cli clientv2.HttpClient, baseURL string, options *clientv2.Option
 }
 
 type AccountCreate_AccountCreate struct {
-	UserID string "json:\"user_id\" graphql:\"user_id\""
+	ID string "json:\"id\" graphql:\"id\""
 }
 
-func (t *AccountCreate_AccountCreate) GetUserID() string {
+func (t *AccountCreate_AccountCreate) GetID() string {
 	if t == nil {
 		t = &AccountCreate_AccountCreate{}
 	}
-	return t.UserID
+	return t.ID
 }
 
 type AccountCreate struct {
@@ -40,7 +40,7 @@ func (t *AccountCreate) GetAccountCreate() *AccountCreate_AccountCreate {
 
 const AccountCreateDocument = `mutation AccountCreate ($pubkey: String!) {
 	accountCreate(pubkey: $pubkey) {
-		user_id
+		id
 	}
 }
 `

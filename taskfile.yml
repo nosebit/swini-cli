@@ -8,6 +8,8 @@ tasks:
   run:
     cmds:
       - go run main.go {{.CLI_ARGS}}
+    env:
+      GO_ENV: development
 
   tidy:
     cmds:

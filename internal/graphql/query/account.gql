@@ -1,5 +1,5 @@
 mutation AccountCreate($pubkey: String!) {
   accountCreate(pubkey: $pubkey) {
-    user_id
+    id
   }
 }

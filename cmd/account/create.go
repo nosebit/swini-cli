@@ -3,9 +3,9 @@ package account
 import (
 	"context"
 	"fmt"
-	"os"
 	"swini-cli/internal/crypto"
 	"swini-cli/internal/graphql"
+	"swini-cli/internal/localstore"
 
 	"github.com/spf13/cobra"
 )
@@ -14,18 +14,18 @@ var CreateCmd = &cobra.Command{
 	Use:   "create",
 	Short: "Create a new account",
 	Run: func(cmd *cobra.Command, args []string) {
-		home, err := os.UserHomeDir()
+		store, err := localstore.Load()
 		if err != nil {
-			fmt.Println("Error getting home directory:", err)
+			fmt.Println("Error loading local store:", err)
 			return
 		}
-		swiniDir := home + "/.swini"
-		if err := os.MkdirAll(swiniDir, 0700); err != nil {
-			fmt.Println("Error creating .swini directory:", err)
+
+		if store.Account.ID != "" {
+			fmt.Println("Account already created with ID:", store.Account.ID)
 			return
 		}
-		privPath := swiniDir + "/account.key"
-		pubkey, err := crypto.GenerateAndStoreKeyPair(privPath)
+
+		pvtkey, pubkey, err := crypto.KeyPairCreate()
 		if err != nil {
 			fmt.Println("Error generating key pair:", err)
 			return
@@ -38,13 +38,17 @@ var CreateCmd = &cobra.Command{
 			return
 		}
 
-		userID := res.AccountCreate.GetUserID()
+		accountID := res.AccountCreate.GetID()
 
-		idPath := swiniDir + "/user.id"
-		if err := os.WriteFile(idPath, []byte(userID), 0600); err != nil {
-			fmt.Println("Error saving user id:", err)
+		store.Account.ID = accountID
+		store.Account.PvtKey = pvtkey
+
+		err = store.Save()
+		if err != nil {
+			fmt.Println("Error saving account to local store:", err)
 			return
 		}
-		fmt.Println("Account created. User ID:", userID)
+
+		fmt.Println("Account created. ID:", accountID)
 	},
 }

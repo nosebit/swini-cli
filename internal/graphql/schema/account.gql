@@ -1,5 +1,5 @@
 type AccountCreateRes {
-  user_id: String!
+  id: String!
 }
 
 type Mutation {
