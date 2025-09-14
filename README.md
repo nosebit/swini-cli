@@ -1,15 +1,25 @@
-# swini-cli
+# Swini CLI
 
-A Go CLI tool for profile creation and management.
+A Go CLI tool for interacting with Swini.
 
-## Features
-- `swini profile create`: Generates an EC key pair, stores the private key locally, calls a GraphQL mutation to create a profile, and stores the returned user ID.
+## Installation
+
+```bash
+curl -sSL https://nosebit.github.io/swini-cli/install.sh | bash
+```
 
 ## Usage
-```
-swini profile create
-```
 
+```bash
+# Create a new account
+swini account create
+
+# Setup a pay method (credit card)
+swini pay method setup
+
+# Setup a pay account (to receive funds)
+swini pay account setup
+```
 
 ## Useful Commands
 
@@ -18,6 +28,6 @@ swini profile create
 task build:gql
 
 # Test the CLI
-task run -- profile create
-go main.go profile create
+task run -- account create
+# or: go main.go account create
 ```
