@@ -26,7 +26,8 @@ func HttpHeaders() (http.Header, error) {
 
 	// Create the signature
 	now := time.Now().UTC().Format(time.RFC3339)
-	sig, err := crypto.SignMessage(store.Account.PvtKey, now)
+	msg := store.Account.ID + now
+	sig, err := crypto.SignMessage(store.Account.PvtKey, msg)
 
 	if err != nil {
 		return nil, err

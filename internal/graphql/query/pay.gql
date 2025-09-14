@@ -1,0 +1,11 @@
+mutation PayAccountSetup {
+  payAccountSetup {
+    url
+  }
+}
+
+mutation PayMethodSetup {
+  payMethodSetup {
+    url
+  }
+}

@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"swini-cli/cmd/account"
+	"swini-cli/cmd/pay"
 	"swini-cli/internal/config"
 	"swini-cli/internal/graphql"
 
@@ -31,5 +32,7 @@ func Execute() {
 }
 
 func init() {
-	mainCmd.AddCommand(account.AccountCmd)
+	mainCmd.AddCommand(account.MainCmd)
+	mainCmd.AddCommand(pay.MainCmd)
+	mainCmd.AddCommand(VersionCmd)
 }

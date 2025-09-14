@@ -1,0 +1,111 @@
+name: release
+on:
+  push:
+    branches:
+      - main
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: setup node/npm
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: install yarn
+        run: npm install --global yarn
+      - name: install semantic-release
+        run: yarn install
+      - name: semantic release dry run to check next version
+        run: VERSION_ONLY=true npx semantic-release --no-ci --dry-run --repository-url https://oauth2:${GH_TOKEN}@github.com/nosebit/swini-cli.git
+      - name: Check next version
+        run: cat version
+      - name: upload version file as an artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: version
+          path: version
+  build-linux-amd64:
+    runs-on: ubuntu-latest
+    needs:
+      - version
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: download next version artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: version
+          path: ./
+      - name: Check next version
+        run: cat version
+      - name: setup go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '^1.25.1'
+      - name: build binary
+        run: GOOS=linux GOARCH=amd64 go build -o ./build/swini
+      - name: compress release folder
+        run: tar -czvf ./build/swini-$(cat version)-linux-amd64.tar.gz ./build/swini
+      - name: upload release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux
+          path: ./build/swini-*.tar.gz
+  build-darwin:
+    runs-on: macos-latest
+    needs:
+      - version
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: download next version artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: version
+          path: ./
+      - name: Check next version
+        run: cat version
+      - name: setup go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '^1.25.1'
+      - name: build amd64 binary
+        run: GOOS=darwin GOARCH=amd64 go build -o ./build/swini
+      - name: compress release folder
+        run: tar -czvf ./build/swini-$(cat version)-darwin-amd64.tar.gz ./build/swini
+      - name: build arm64 binary
+        run: GOOS=darwin GOARCH=arm64 go build -o ./build/swini
+      - name: compress release folder
+        run: tar -czvf ./build/swini-$(cat version)-darwin-arm64.tar.gz ./build/swini
+      - name: upload release artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: darwin
+          path: build/swini-*.tar.gz
+  release:
+    runs-on: ubuntu-latest
+    needs:
+      - build-linux-amd64
+      - build-darwin
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: make release folder
+        run: mkdir -p .releases
+      - uses: actions/download-artifact@v4
+        with:
+          path: .releases
+      - name: setup node/npm
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: install yarn
+        run: npm install --global yarn
+      - name: install semantic-release
+        run: yarn install
+      - name: run semantic release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release --debug --repository-url https://oauth2:${GH_TOKEN}@github.com/nosebit/swini-cli.git

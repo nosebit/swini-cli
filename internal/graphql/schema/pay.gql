@@ -1,0 +1,12 @@
+type PayAccountSetupRes {
+  url: String!
+}
+
+type PayMethodSetupRes {
+  url: String!
+}
+
+extend type Mutation {
+  payAccountSetup: PayAccountSetupRes! @auth
+  payMethodSetup: PayMethodSetupRes! @auth
+}

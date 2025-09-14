@@ -27,6 +27,28 @@ func (t *AccountCreate_AccountCreate) GetID() string {
 	return t.ID
 }
 
+type PayAccountSetup_PayAccountSetup struct {
+	URL string "json:\"url\" graphql:\"url\""
+}
+
+func (t *PayAccountSetup_PayAccountSetup) GetURL() string {
+	if t == nil {
+		t = &PayAccountSetup_PayAccountSetup{}
+	}
+	return t.URL
+}
+
+type PayMethodSetup_PayMethodSetup struct {
+	URL string "json:\"url\" graphql:\"url\""
+}
+
+func (t *PayMethodSetup_PayMethodSetup) GetURL() string {
+	if t == nil {
+		t = &PayMethodSetup_PayMethodSetup{}
+	}
+	return t.URL
+}
+
 type AccountCreate struct {
 	AccountCreate AccountCreate_AccountCreate "json:\"accountCreate\" graphql:\"accountCreate\""
 }
@@ -36,6 +58,28 @@ func (t *AccountCreate) GetAccountCreate() *AccountCreate_AccountCreate {
 		t = &AccountCreate{}
 	}
 	return &t.AccountCreate
+}
+
+type PayAccountSetup struct {
+	PayAccountSetup PayAccountSetup_PayAccountSetup "json:\"payAccountSetup\" graphql:\"payAccountSetup\""
+}
+
+func (t *PayAccountSetup) GetPayAccountSetup() *PayAccountSetup_PayAccountSetup {
+	if t == nil {
+		t = &PayAccountSetup{}
+	}
+	return &t.PayAccountSetup
+}
+
+type PayMethodSetup struct {
+	PayMethodSetup PayMethodSetup_PayMethodSetup "json:\"payMethodSetup\" graphql:\"payMethodSetup\""
+}
+
+func (t *PayMethodSetup) GetPayMethodSetup() *PayMethodSetup_PayMethodSetup {
+	if t == nil {
+		t = &PayMethodSetup{}
+	}
+	return &t.PayMethodSetup
 }
 
 const AccountCreateDocument = `mutation AccountCreate ($pubkey: String!) {
@@ -62,6 +106,52 @@ func (c *Client) AccountCreate(ctx context.Context, pubkey string, interceptors 
 	return &res, nil
 }
 
+const PayAccountSetupDocument = `mutation PayAccountSetup {
+	payAccountSetup {
+		url
+	}
+}
+`
+
+func (c *Client) PayAccountSetup(ctx context.Context, interceptors ...clientv2.RequestInterceptor) (*PayAccountSetup, error) {
+	vars := map[string]any{}
+
+	var res PayAccountSetup
+	if err := c.Client.Post(ctx, "PayAccountSetup", PayAccountSetupDocument, &res, vars, interceptors...); err != nil {
+		if c.Client.ParseDataWhenErrors {
+			return &res, err
+		}
+
+		return nil, err
+	}
+
+	return &res, nil
+}
+
+const PayMethodSetupDocument = `mutation PayMethodSetup {
+	payMethodSetup {
+		url
+	}
+}
+`
+
+func (c *Client) PayMethodSetup(ctx context.Context, interceptors ...clientv2.RequestInterceptor) (*PayMethodSetup, error) {
+	vars := map[string]any{}
+
+	var res PayMethodSetup
+	if err := c.Client.Post(ctx, "PayMethodSetup", PayMethodSetupDocument, &res, vars, interceptors...); err != nil {
+		if c.Client.ParseDataWhenErrors {
+			return &res, err
+		}
+
+		return nil, err
+	}
+
+	return &res, nil
+}
+
 var DocumentOperationNames = map[string]string{
-	AccountCreateDocument: "AccountCreate",
+	AccountCreateDocument:   "AccountCreate",
+	PayAccountSetupDocument: "PayAccountSetup",
+	PayMethodSetupDocument:  "PayMethodSetup",
 }

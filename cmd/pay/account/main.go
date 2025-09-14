@@ -5,10 +5,10 @@ import (
 )
 
 func init() {
-	MainCmd.AddCommand(CreateCmd)
+	MainCmd.AddCommand(SetupCmd)
 }
 
 var MainCmd = &cobra.Command{
 	Use:   "account",
-	Short: "Account management",
+	Short: "Pay account management",
 }
