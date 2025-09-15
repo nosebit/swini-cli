@@ -2,6 +2,7 @@ package localstore
 
 import (
 	"encoding/json"
+	"os"
 
 	"swini-cli/internal/config"
 
@@ -30,12 +31,18 @@ var (
 // Open initializes the DB connection.
 func Open() error {
 	if db == nil {
+		env := os.Getenv("GO_ENV")
+		dbFile := "data.db"
+		if env == "development" {
+			dbFile = "data.dev.db"
+		}
+
 		cfg, err := config.Load()
 		if err != nil {
 			return err
 		}
 
-		db, err = bbolt.Open(cfg.DataDir+"/data.db", 0600, nil)
+		db, err = bbolt.Open(cfg.DataDir+"/"+dbFile, 0600, nil)
 		if err != nil {
 			return err
 		}
